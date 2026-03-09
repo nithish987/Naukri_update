@@ -2,7 +2,7 @@ name: Naukri Auto Update
 
 on:
   schedule:
-    - cron: '0 * * * *'  # runs every hour
+    - cron: '0 * * * *'
 
 jobs:
   update:
@@ -24,7 +24,4 @@ jobs:
           playwright install-deps chromium
 
       - name: Run Naukri update
-        env:
-          NAUKRI_EMAIL: ${{ secrets.NAUKRI_EMAIL }}
-          NAUKRI_PASSWORD: ${{ secrets.NAUKRI_PASSWORD }}
         run: python naukri_update.py
