@@ -2,7 +2,7 @@ name: Naukri Auto Update
 
 on:
   schedule:
-    - cron: '*/30 8-23 * * *'
+    - cron: '*/30 * * * *'
   workflow_dispatch:
 
 jobs:
