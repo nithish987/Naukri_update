@@ -38,7 +38,7 @@ def update_naukri():
     log("Starting Naukri profile update...")
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)
+        browser = p.chromium.launch(headless=True)
         page = browser.new_page()
 
         try:
@@ -97,4 +97,5 @@ def update_naukri():
             browser.close()
 
 if __name__ == "__main__":
+
     update_naukri()
