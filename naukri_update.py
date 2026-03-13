@@ -2,7 +2,6 @@
 NAUKRI AUTO PROFILE UPDATER
 Opens Resume Headline, adds/removes a space, saves — marks profile as updated
 """
-
 from playwright.sync_api import sync_playwright
 import time
 import datetime
@@ -38,7 +37,10 @@ def update_naukri():
     log("Starting Naukri profile update...")
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
+        browser = p.chromium.launch(
+            headless=True,
+            args=["--no-sandbox", "--disable-setuid-sandbox"]
+        )
         page = browser.new_page()
 
         try:
@@ -49,32 +51,34 @@ def update_naukri():
             time.sleep(8)
 
             log("Logging in...")
+            page.wait_for_selector('input[placeholder="Enter Email ID / Username"]', timeout=60000)
             page.fill('input[placeholder="Enter Email ID / Username"]', NAUKRI_EMAIL)
             page.fill('input[placeholder="Enter Password"]', NAUKRI_PASSWORD)
             page.get_by_role("button", name="Login", exact=True).click()
-            time.sleep(5)
+            time.sleep(8)
 
             # Step 2: Go to profile
             log("Going to profile page...")
             page.goto("https://www.naukri.com/mnjuser/profile", timeout=60000)
             page.wait_for_load_state("domcontentloaded")
-            time.sleep(6)
+            time.sleep(8)
 
             # Step 3: Click Resume Headline edit button
             log("Opening Resume Headline editor...")
             page.get_by_text("Resume headline").first.click(timeout=10000)
-            time.sleep(2)
-            page.locator("span.edit").nth(0).click(timeout=10000)
             time.sleep(3)
+            page.locator("span.edit").nth(0).click(timeout=10000)
+            time.sleep(4)
 
             # Step 4: Find textarea and add/remove a space
             log("Editing headline text...")
+            page.wait_for_selector("textarea", timeout=30000)
             textarea = page.locator("textarea").first
             current_text = textarea.input_value()
 
             toggle = get_toggle()
             if toggle == 0:
-                new_text = current_text + " "   # add a space
+                new_text = current_text + " "    # add a space
             else:
                 new_text = current_text.rstrip() # remove the space
 
@@ -85,18 +89,20 @@ def update_naukri():
             # Step 5: Click Save
             log("Clicking Save...")
             page.get_by_role("button", name="Save").click(timeout=10000)
-            time.sleep(3)
+            time.sleep(4)
 
             log("Profile updated successfully!")
             browser.close()
 
         except Exception as e:
             log(f"Error: {str(e)}")
-            page.screenshot(path="naukri_error.png")
-            log("Screenshot saved as naukri_error.png")
+            try:
+                page.screenshot(path="naukri_error.png")
+                log("Screenshot saved as naukri_error.png")
+            except:
+                pass
             browser.close()
 
 if __name__ == "__main__":
-
     update_naukri()
 
