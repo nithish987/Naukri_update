@@ -44,9 +44,9 @@ def update_naukri():
         try:
             # Step 1: Login
             log("Opening Naukri.com...")
-            page.goto("https://www.naukri.com/nlogin/login", timeout=30000)
-            page.wait_for_load_state("networkidle")
-            time.sleep(3)
+            page.goto("https://www.naukri.com/nlogin/login", timeout=60000)
+            page.wait_for_load_state("domcontentloaded")
+            time.sleep(8)
 
             log("Logging in...")
             page.fill('input[placeholder="Enter Email ID / Username"]', NAUKRI_EMAIL)
@@ -99,3 +99,4 @@ def update_naukri():
 if __name__ == "__main__":
 
     update_naukri()
+
